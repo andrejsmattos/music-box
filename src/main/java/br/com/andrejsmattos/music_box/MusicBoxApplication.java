@@ -1,0 +1,13 @@
+package br.com.andrejsmattos.music_box;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class MusicBoxApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(MusicBoxApplication.class, args);
+	}
+
+}
