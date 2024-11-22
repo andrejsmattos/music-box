@@ -13,6 +13,12 @@ public class Artista {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
+    private String url;
+    private Long ouvintes;
+    private Long totalReproducoes;
+    @Column(length = 5000)
+    private String resumo;
+
     @Enumerated(EnumType.STRING)
     private TipoArtista tipoArtista;
 
@@ -30,16 +36,31 @@ public class Artista {
     public Artista() {
     }
 
-    public Artista(Long id, String nome, TipoArtista tipoArtista, List<Musica> musicas, List<Album> albuns) {
-        this.id = id;
+    public Artista(String nome, String url, Long ouvintes, Long totalReproducoes, String resumo, TipoArtista tipoArtista, List<Musica> musicas, List<Album> albuns) {
         this.nome = nome;
+        this.url = url;
+        this.ouvintes = ouvintes;
+        this.totalReproducoes = totalReproducoes;
+        this.resumo = resumo;
         this.tipoArtista = tipoArtista;
         this.musicas = musicas;
         this.albuns = albuns;
     }
 
-    public Artista(String nomeArtista, TipoArtista tipoArtista) {
+    public Artista(String nome, String url, Long ouvintes, Long totalReproducoes, String resumo, TipoArtista tipoArtista) {
         this.nome = nome;
+        this.url = url;
+        this.ouvintes = ouvintes;
+        this.totalReproducoes = totalReproducoes;
+        this.resumo = resumo;
+        this.tipoArtista = tipoArtista;
+    }
+
+    public Artista(String nome, String url, Long ouvintes, Long totalReproducoes, TipoArtista tipoArtista) {
+        this.nome = nome;
+        this.url = url;
+        this.ouvintes = ouvintes;
+        this.totalReproducoes = totalReproducoes;
         this.tipoArtista = tipoArtista;
     }
 
@@ -59,11 +80,43 @@ public class Artista {
         this.nome = nome;
     }
 
-    public TipoArtista getCategoria() {
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Long getOuvintes() {
+        return ouvintes;
+    }
+
+    public void setOuvintes(Long ouvintes) {
+        this.ouvintes = ouvintes;
+    }
+
+    public Long getTotalReproducoes() {
+        return totalReproducoes;
+    }
+
+    public void setTotalReproducoes(Long totalReproducoes) {
+        this.totalReproducoes = totalReproducoes;
+    }
+
+    public String getResumo() {
+        return resumo;
+    }
+
+    public void setResumo(String resumo) {
+        this.resumo = resumo;
+    }
+
+    public TipoArtista getTipoArtista() {
         return tipoArtista;
     }
 
-    public void setCategoria(TipoArtista tipoArtista) {
+    public void setTipoArtista(TipoArtista tipoArtista) {
         this.tipoArtista = tipoArtista;
     }
 
@@ -85,10 +138,10 @@ public class Artista {
 
     @Override
     public String toString() {
-        return
-                "Artista: " + nome + '\'' +
-                ", categoria: " + tipoArtista +
-                ", musicas: " + musicas +
-                ", albuns: " + albuns;
+        return "Artista: " + nome +
+                ", tipoArtista: " + tipoArtista +
+                ", url: " + url +
+                ", ouvintes: " + ouvintes +
+                ", totalReproducoes: " + totalReproducoes;
     }
 }

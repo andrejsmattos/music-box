@@ -2,12 +2,14 @@ package br.com.andrejsmattos.music_box.principal;
 
 import br.com.andrejsmattos.music_box.entities.Artista;
 import br.com.andrejsmattos.music_box.entities.DadosArtista;
+import br.com.andrejsmattos.music_box.entities.TipoArtista;
 import br.com.andrejsmattos.music_box.repositories.ArtistaRepository;
 import br.com.andrejsmattos.music_box.services.ConsumoApi;
 import br.com.andrejsmattos.music_box.services.ConverteDados;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Principal {
@@ -16,7 +18,7 @@ public class Principal {
     private final ConsumoApi consumo = new ConsumoApi();
     private final ConverteDados conversor = new ConverteDados();
     private final String ENDERECO = "https://ws.audioscrobbler.com/2.0/?";
-    private final String BUSCA_ARTISTA = "method=artist.search&artist=";
+    private final String BUSCA_ARTISTA = "method=artist.getinfo&artist=";
     private final String BUSCA_ALBUM = "?method=album.search&album=";
     private final String BUSCA_MUSICA = "method=track.search&track=";
     private final String API_KEY = System.getenv("LAST_FM_API_KEY");
@@ -44,8 +46,14 @@ public class Principal {
                     """;
 
             System.out.println(menu);
-            opcao = sc.nextInt();
-            sc.nextLine();
+            try {
+                opcao = sc.nextInt();
+                sc.nextLine();
+            } catch (InputMismatchException e) {
+                System.out.println("Insira um número válido.");
+                sc.nextLine();
+                continue;
+            }
 
             switch (opcao) {
                 case 1:
@@ -74,24 +82,31 @@ public class Principal {
 
     private void cadastrarArtistas() {
         DadosArtista dados = getDadosArtista();
+
+        System.out.println("\nInforme o tipo desse artista (solo, dupla ou banda): ");
+        var tipo = sc.nextLine();
+        TipoArtista tipoArtista = TipoArtista.valueOf(tipo.toUpperCase());
+
         Artista artista = new Artista();
+        artista.setNome(dados.nome());
+        artista.setTipoArtista(tipoArtista);
+        artista.setUrl(dados.url());
+        artista.setOuvintes(dados.estatisticas().ouvintes());
+        artista.setTotalReproducoes(dados.estatisticas().totalReproducoes());
+        artista.setResumo(dados.biografia().resumo());
+
         repositorioArtista.save(artista);
-        System.out.println(dados);
+        System.out.println("\n" + artista);
     }
 
     private DadosArtista getDadosArtista() {
-        System.out.println("Digite o nome do artista para cadastro: ");
+        System.out.println("\nDigite o nome do artista para cadastro: ");
         var nome = sc.nextLine();
-
-//        System.out.println("Informe o tipo desse artista (solo, dupla ou banda): ");
-//        var tipo = sc.nextLine();
-//        TipoArtista tipoArtista = TipoArtista.valueOf(tipo.toUpperCase());
-//        Artista artista = new Artista(nome, tipoArtista);
 
         var json = consumo.obterDados(ENDERECO + BUSCA_ARTISTA + nome.replace(" ", "+") + API_KEY);
         DadosArtista dados = conversor.obterDados(json, DadosArtista.class);
-        System.out.println("Retorno json:" + json);
-        System.out.println("DadosArtista: " + dados);  // Verifique o objeto de saída
+//        System.out.println("Retorno json:" + json);
+//        System.out.println("DadosArtista: " + dados);  // Verifique o objeto de saída
 
         return dados;
     }

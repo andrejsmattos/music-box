@@ -7,25 +7,26 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record DadosArtista(
+
         @JsonAlias("name") String nome,
         @JsonAlias("url") String url,
-        @JsonAlias("image") List<Imagem> imagens,
+//        @JsonAlias("image") List<Imagem> imagens,
         @JsonAlias("stats") Estatisticas estatisticas,
         @JsonAlias("similar") Similares similares,
-        @JsonAlias("tags") GeneroMusical generoMusical,
+//        @JsonAlias("tags") GeneroMusical generoMusical,
         @JsonAlias("bio") Biografia biografia
         ) {
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public record Imagem(
-            @JsonAlias("#text") String url,
-            @JsonAlias("size") String tamanho
-            ) {}
-
+//    @JsonIgnoreProperties(ignoreUnknown = true)
+//    public record Imagem(
+//            @JsonAlias("#text") String url,
+//            @JsonAlias("size") String tamanho
+//            ) {}
+//
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record Estatisticas(
-            @JsonAlias("listeners") Integer ouvintes,
-            @JsonAlias("playcount") Integer totalReproducoes
+            @JsonAlias("listeners") Long ouvintes,
+            @JsonAlias("playcount") Long totalReproducoes
             ) {}
 
     @JsonIgnoreProperties(ignoreUnknown = true)
