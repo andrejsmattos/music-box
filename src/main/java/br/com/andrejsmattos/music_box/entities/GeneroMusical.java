@@ -1,0 +1,38 @@
+package br.com.andrejsmattos.music_box.entities;
+
+public enum GeneroMusical {
+    POP,
+    ROCK,
+    JAZZ,
+    CLASSICO,
+    HIP_HOP,
+    RAP,
+    REGGAE,
+    BLUES,
+    COUNTRY,
+    ELETRONICA,
+    FUNK,
+    SAMBA,
+    MPB,
+    BOSSA_NOVA,
+    PAGODE,
+    FORRO,
+    SERTANEJO,
+    K_POP,
+    GOSPEL,
+    R_B, // Rhythm and Blues
+    METAL,
+    PUNK,
+    SOUL,
+    INDIE,
+    FOLK,
+    TRAP,
+    DISCO,
+    OPERA,
+    HOUSE,
+    TECHNO,
+    DUBSTEP,
+    LATINO,
+    AXE,
+    REGGAETON
+}
