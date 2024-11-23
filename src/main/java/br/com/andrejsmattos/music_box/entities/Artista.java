@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static br.com.andrejsmattos.music_box.utils.FormatadorNumero.formatarNumero;
+
 @Entity
 @Table(name = "artistas")
 public class Artista {
@@ -141,7 +143,7 @@ public class Artista {
         return "Artista: " + nome +
                 ", tipoArtista: " + tipoArtista +
                 ", url: " + url +
-                ", ouvintes: " + ouvintes +
-                ", totalReproducoes: " + totalReproducoes;
+                ", ouvintes: " + formatarNumero(ouvintes) +
+                ", totalReproducoes: " + formatarNumero(totalReproducoes);
     }
 }

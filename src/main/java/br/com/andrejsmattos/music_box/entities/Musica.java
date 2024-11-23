@@ -1,10 +1,13 @@
 package br.com.andrejsmattos.music_box.entities;
 
+import br.com.andrejsmattos.music_box.utils.FormatadorDuracao;
 import jakarta.persistence.*;
 
 import java.text.NumberFormat;
 import java.time.Duration;
 import java.util.Locale;
+
+import static br.com.andrejsmattos.music_box.utils.FormatadorNumero.formatarNumero;
 
 @Entity
 @Table(name = "musicas")
@@ -77,16 +80,8 @@ public class Musica {
     }
 
     public void setDuracao(Long duracao) {
-        if (duracao != null) {
-            Duration duration = Duration.ofMillis(duracao);
-            long totalSeconds = duracao / 1000;
-            long minutes = totalSeconds / 60;
-            long seconds = totalSeconds % 60;
-            this.duracao = String.format("%02d:%02d", minutes, seconds);
-        } else {
-            this.duracao = null;
-        }
-    }
+        this.duracao = FormatadorDuracao.formatarDuracao(duracao);
+     }
 
     public Long getOuvintes() {
         return ouvintes;
@@ -128,14 +123,6 @@ public class Musica {
 //    public void setAlbum(Album album) {
 //        this.album = album;
 //    }
-
-    public String formatarNumero(Long numero) {
-        if (numero == null) {
-            return null;
-        }
-        NumberFormat numberFormat = NumberFormat.getInstance(new Locale("pt", "BR"));
-        return numberFormat.format(numero);
-    }
 
     @Override
     public String toString() {
