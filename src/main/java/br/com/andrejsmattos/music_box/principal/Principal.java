@@ -207,6 +207,12 @@ public class Principal {
     }
 
     private void listarMusicasPorArtista() {
+        System.out.println("\nDe qual artista você deseja listar as músicas? ");
+        var nomeArtista = sc.nextLine();
+        musicas = repositorioMusica.findByArtista_NomeContainingIgnoreCase(nomeArtista);
+        musicas.stream()
+                .sorted(Comparator.comparing(Musica::getTotalReproducoes).reversed())
+                .forEach(System.out::println);
     }
 
     private void pesquisarBiografiaArtista() {
