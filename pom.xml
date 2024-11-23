@@ -74,6 +74,16 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+
+			<dependency>
+				<groupId>org.ocpsoft.pretty</groupId>
+				<artifactId>prettytime</artifactId>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

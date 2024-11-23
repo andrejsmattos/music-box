@@ -18,8 +18,8 @@ public class Album {
     private int numeroFaixas;
 
 //    @Transient
-    @OneToMany(mappedBy = "album", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Musica> musicas = new ArrayList<>();
+//    @OneToMany(mappedBy = "album", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    private List<Musica> musicas = new ArrayList<>();
 
 //    @Transient
     @ManyToOne
@@ -34,7 +34,7 @@ public class Album {
         this.nome = nome;
         this.dataLancamento = dataLancamento;
         this.numeroFaixas = numeroFaixas;
-        this.musicas = musicas;
+//        this.musicas = musicas;
         this.artista = artista;
     }
 
@@ -70,13 +70,13 @@ public class Album {
         this.numeroFaixas = numeroFaixas;
     }
 
-    public List<Musica> getMusicas() {
-        return musicas;
-    }
-
-    public void setMusicas(List<Musica> musicas) {
-        this.musicas = musicas;
-    }
+//    public List<Musica> getMusicas() {
+//        return musicas;
+//    }
+//
+//    public void setMusicas(List<Musica> musicas) {
+//        this.musicas = musicas;
+//    }
 
     public Artista getArtista() {
         return artista;
@@ -91,7 +91,7 @@ public class Album {
         return "Álbum: " + nome + '\'' +
                 ", dataLancamento: " + dataLancamento +
                 ", numeroFaixas: " + numeroFaixas +
-                ", musicas: " + musicas +
+//                ", musicas: " + musicas +
                 ", artista: " + artista;
     }
 }
