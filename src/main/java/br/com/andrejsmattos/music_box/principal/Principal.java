@@ -27,6 +27,9 @@ public class Principal {
     private Optional<Artista> artistaBusca = Optional.empty();
     private String nomeArtista;
 
+    private List<Musica> musicas = new ArrayList<>();
+
+
     @Autowired
     private ArtistaRepository repositorioArtista;
     @Autowired
@@ -197,7 +200,10 @@ public class Principal {
     }
 
     private void listarMusicas() {
-
+        musicas = repositorioMusica.findAll();
+        musicas.stream()
+                .sorted(Comparator.comparing(Musica::getTotalReproducoes).reversed())
+                .forEach(System.out::println);
     }
 
     private void buscarMusicasPorArtista() {
