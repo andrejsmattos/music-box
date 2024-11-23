@@ -27,8 +27,8 @@ public class Artista {
     private List<Musica> musicas = new ArrayList<>();
 
 //    @Transient
-    @OneToMany(mappedBy = "artista", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Album> albuns = new ArrayList<>();
+//    @OneToMany(mappedBy = "artista", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    private List<Album> albuns = new ArrayList<>();
 
 //    private String paisOrigem;
 //    private LocalDate dataNascimento;
@@ -44,7 +44,7 @@ public class Artista {
         this.resumo = resumo;
         this.tipoArtista = tipoArtista;
         this.musicas = musicas;
-        this.albuns = albuns;
+//        this.albuns = albuns;
     }
 
     public Artista(String nome, String url, Long ouvintes, Long totalReproducoes, String resumo, TipoArtista tipoArtista) {
@@ -128,13 +128,13 @@ public class Artista {
         this.musicas = musicas;
     }
 
-    public List<Album> getAlbuns() {
-        return albuns;
-    }
-
-    public void setAlbuns(List<Album> albuns) {
-        this.albuns = albuns;
-    }
+//    public List<Album> getAlbuns() {
+//        return albuns;
+//    }
+//
+//    public void setAlbuns(List<Album> albuns) {
+//        this.albuns = albuns;
+//    }
 
     @Override
     public String toString() {

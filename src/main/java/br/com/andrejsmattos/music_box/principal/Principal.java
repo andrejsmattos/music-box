@@ -1,16 +1,15 @@
 package br.com.andrejsmattos.music_box.principal;
 
-import br.com.andrejsmattos.music_box.entities.Artista;
-import br.com.andrejsmattos.music_box.entities.DadosArtista;
-import br.com.andrejsmattos.music_box.entities.TipoArtista;
+import br.com.andrejsmattos.music_box.entities.*;
+import br.com.andrejsmattos.music_box.exceptions.ConversaoJsonException;
 import br.com.andrejsmattos.music_box.repositories.ArtistaRepository;
+import br.com.andrejsmattos.music_box.repositories.MusicaRepository;
 import br.com.andrejsmattos.music_box.services.ConsumoApi;
 import br.com.andrejsmattos.music_box.services.ConverteDados;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
 
 public class Principal {
 
@@ -18,16 +17,24 @@ public class Principal {
     private final ConsumoApi consumo = new ConsumoApi();
     private final ConverteDados conversor = new ConverteDados();
     private final String ENDERECO = "https://ws.audioscrobbler.com/2.0/?";
-    private final String BUSCA_ARTISTA = "method=artist.getinfo&artist=";
+    private final String INFO_ARTISTA = "method=artist.getinfo&artist=";
     private final String BUSCA_ALBUM = "?method=album.search&album=";
-    private final String BUSCA_MUSICA = "method=track.search&track=";
+    private final String INFO_MUSICA = "method=track.getInfo";
     private final String API_KEY = System.getenv("LAST_FM_API_KEY");
+    private final String RESPONSE_FORMAT = "&format=json";
+
+    private List<Artista> artistas = new ArrayList<>();
+    private Optional<Artista> artistaBusca = Optional.empty();
+    private String nomeArtista;
 
     @Autowired
     private ArtistaRepository repositorioArtista;
+    @Autowired
+    private MusicaRepository repositorioMusica;
 
-    public Principal(ArtistaRepository repositorioArtista) throws JsonProcessingException {
+    public Principal(ArtistaRepository repositorioArtista, MusicaRepository repositorioMusica) throws JsonProcessingException {
         this.repositorioArtista = repositorioArtista;
+        this.repositorioMusica = repositorioMusica;
     }
 
     public void exibeMenu() {
@@ -72,7 +79,7 @@ public class Principal {
                     pesquisarSobreArtista();
                     break;
                 case 0:
-                    System.out.println("Saindo...");
+                    System.out.println("Saindo...\n");
                     break;
                 default:
                     System.out.println("Opção inválida");
@@ -81,38 +88,112 @@ public class Principal {
     }
 
     private void cadastrarArtistas() {
-        DadosArtista dados = getDadosArtista();
+        var cadastrarNovo = "S";
 
-        System.out.println("\nInforme o tipo desse artista (solo, dupla ou banda): ");
-        var tipo = sc.nextLine();
-        TipoArtista tipoArtista = TipoArtista.valueOf(tipo.toUpperCase());
+        while(cadastrarNovo.equalsIgnoreCase("S")) {
+            DadosArtista dados = getDadosArtista();
 
-        Artista artista = new Artista();
-        artista.setNome(dados.nome());
-        artista.setTipoArtista(tipoArtista);
-        artista.setUrl(dados.url());
-        artista.setOuvintes(dados.estatisticas().ouvintes());
-        artista.setTotalReproducoes(dados.estatisticas().totalReproducoes());
-        artista.setResumo(dados.biografia().resumo());
+            System.out.println("\nInforme o tipo desse artista (solo, dupla ou banda): ");
+            var tipo = sc.nextLine();
+            TipoArtista tipoArtista = TipoArtista.valueOf(tipo.toUpperCase());
 
-        repositorioArtista.save(artista);
-        System.out.println("\n" + artista);
+            Artista artista = new Artista();
+            artista.setNome(dados.nome());
+            artista.setTipoArtista(tipoArtista);
+            artista.setUrl(dados.url());
+            artista.setOuvintes(dados.estatisticas().ouvintes());
+            artista.setTotalReproducoes(dados.estatisticas().totalReproducoes());
+            artista.setResumo(dados.biografia().resumo());
+
+            repositorioArtista.save(artista);
+            System.out.println("\n" + artista);
+
+            System.out.println("\nDeseja cadastrar outro artista (S/N)?");
+            cadastrarNovo = sc.nextLine();
+        }
     }
 
     private DadosArtista getDadosArtista() {
         System.out.println("\nDigite o nome do artista para cadastro: ");
         var nome = sc.nextLine();
 
-        var json = consumo.obterDados(ENDERECO + BUSCA_ARTISTA + nome.replace(" ", "+") + API_KEY);
-        DadosArtista dados = conversor.obterDados(json, DadosArtista.class);
-//        System.out.println("Retorno json:" + json);
-//        System.out.println("DadosArtista: " + dados);  // Verifique o objeto de saída
+        var json = consumo.obterDados(ENDERECO + INFO_ARTISTA + nome.replace(" ", "+") + API_KEY + RESPONSE_FORMAT);
+        return conversor.obterDados(json, DadosArtista.class);
+    }
 
-        return dados;
+    private void listarArtistasCadastrados(){
+        artistas = repositorioArtista.findAll();
+        artistas.stream()
+                .sorted(Comparator.comparing(Artista::getTotalReproducoes).reversed())
+                .forEach(System.out::println);
     }
 
     private void cadastrarMusicas() {
+        listarArtistasCadastrados();
+        System.out.println("\nVocê deseja cadastrar música de que artista?");
+        nomeArtista = sc.nextLine();
 
+        artistaBusca = repositorioArtista.findByNomeContainingIgnoreCase(nomeArtista);
+
+        if (artistaBusca.isPresent()) {
+            var cadastrar = "S";
+
+            while(cadastrar.equalsIgnoreCase("S")) {
+                try {
+                    DadosMusica dados = getDadosMusica();
+
+                    Musica musica = new Musica();
+                    musica.setArtista(artistaBusca.get());
+                    musica.setTitulo(dados.titulo());
+                    musica.setUrl(dados.url());
+                    musica.setDuracao(dados.duracao());
+                    musica.setOuvintes(dados.ouvintes());
+                    if (!dados.topTags().tags().isEmpty()) {
+                        musica.setGeneroMusical(dados.topTags().tags().get(0).generoMusical());
+                    } else {
+                        musica.setGeneroMusical(null);
+                    }
+
+                    if (dados.totalReproducoes() < 100) {
+                        System.out.println("Música não existe ou não foi encontrada.");
+                    } else {
+                        musica.setTotalReproducoes(dados.totalReproducoes());
+                        repositorioMusica.save(musica);
+                        System.out.println("\n" + musica);
+                    }
+
+                } catch (ConversaoJsonException e) {
+                    System.err.println(e.getMessage());
+                }
+
+                System.out.println("\nDeseja cadastrar outra música deste artista (S/N)?");
+                cadastrar = sc.nextLine();
+            }
+        } else {
+            System.out.println("Cadastre o artista autor desta música antes de cadastrar esta música.");
+        }
+    }
+
+    private DadosMusica getDadosMusica() {
+        System.out.println("\nDigite o nome da música para cadastro: ");
+        var tituloMusica = sc.nextLine();
+
+        var json = consumo.obterDados(
+                ENDERECO +
+                        INFO_MUSICA +
+                        API_KEY  +
+                        "&artist=" +
+                        nomeArtista.replace(" ", "+") +
+                        "&track=" +
+                        tituloMusica.replace(" ", "+") +
+                        RESPONSE_FORMAT);
+
+        DadosMusica dados = conversor.obterDados(json, DadosMusica.class);
+
+        System.out.println("\nJSON: " + json);
+        System.out.println("\nDados música: " + dados);
+
+        return dados;
     }
 
     private void listarMusicas() {
