@@ -24,7 +24,6 @@ public class Principal {
     private final String RESPONSE_FORMAT = "&format=json";
 
     private List<Artista> artistas = new ArrayList<>();
-    private Optional<Artista> artistaBusca = Optional.empty();
     private String nomeArtista;
 
     private List<Musica> musicas = new ArrayList<>();
@@ -49,8 +48,8 @@ public class Principal {
                     1 - Cadastrar artistas
                     2 - Cadastrar músicas
                     3 - Listar músicas
-                    4 - Buscar músicas por artista
-                    5 - Pesquisar dados sobre um artista
+                    4 - Listar músicas por artista
+                    5 - Pesquisar biografia um artista
                     
                     0 - Sair
                     """;
@@ -76,10 +75,10 @@ public class Principal {
                     listarMusicas();
                     break;
                 case 4:
-                    buscarMusicasPorArtista();
+                    listarMusicasPorArtista();
                     break;
                 case 5:
-                    pesquisarSobreArtista();
+                    pesquisarBiografiaArtista();
                     break;
                 case 0:
                     System.out.println("Saindo...\n");
@@ -136,7 +135,7 @@ public class Principal {
         System.out.println("\nVocê deseja cadastrar música de que artista?");
         nomeArtista = sc.nextLine();
 
-        artistaBusca = repositorioArtista.findByNomeContainingIgnoreCase(nomeArtista);
+        Optional<Artista> artistaBusca = repositorioArtista.findByNomeContainingIgnoreCase(nomeArtista);
 
         if (artistaBusca.isPresent()) {
             var cadastrar = "S";
@@ -151,6 +150,7 @@ public class Principal {
                     musica.setUrl(dados.url());
                     musica.setDuracao(dados.duracao());
                     musica.setOuvintes(dados.ouvintes());
+                    artistaBusca.get().getMusicas().add(musica);
                     if (!dados.topTags().tags().isEmpty()) {
                         musica.setGeneroMusical(dados.topTags().tags().get(0).generoMusical());
                     } else {
@@ -158,7 +158,7 @@ public class Principal {
                     }
 
                     if (dados.totalReproducoes() < 100) {
-                        System.out.println("Música não existe ou não foi encontrada.");
+                        System.out.println("\nMúsica não existe ou não foi encontrada.");
                     } else {
                         musica.setTotalReproducoes(dados.totalReproducoes());
                         repositorioMusica.save(musica);
@@ -173,7 +173,7 @@ public class Principal {
                 cadastrar = sc.nextLine();
             }
         } else {
-            System.out.println("Cadastre o artista autor desta música antes de cadastrar esta música.");
+            System.out.println("\nCadastre o artista autor desta música antes de cadastrar esta música.");
         }
     }
 
@@ -206,11 +206,10 @@ public class Principal {
                 .forEach(System.out::println);
     }
 
-    private void buscarMusicasPorArtista() {
-
+    private void listarMusicasPorArtista() {
     }
 
-    private void pesquisarSobreArtista() {
+    private void pesquisarBiografiaArtista() {
 
     }
 }
