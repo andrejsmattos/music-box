@@ -24,6 +24,7 @@ public class Principal {
     private final String RESPONSE_FORMAT = "&format=json";
 
     private List<Artista> artistas = new ArrayList<>();
+    Optional<Artista> artistaBusca;
     private String nomeArtista;
 
     private List<Musica> musicas = new ArrayList<>();
@@ -49,7 +50,7 @@ public class Principal {
                     2 - Cadastrar músicas
                     3 - Listar músicas
                     4 - Listar músicas por artista
-                    5 - Pesquisar biografia um artista
+                    5 - Pesquisar biografia de um artista
                     
                     0 - Sair
                     """;
@@ -135,7 +136,7 @@ public class Principal {
         System.out.println("\nVocê deseja cadastrar música de que artista?");
         nomeArtista = sc.nextLine();
 
-        Optional<Artista> artistaBusca = repositorioArtista.findByNomeContainingIgnoreCase(nomeArtista);
+        artistaBusca = repositorioArtista.findByNomeContainingIgnoreCase(nomeArtista);
 
         if (artistaBusca.isPresent()) {
             var cadastrar = "S";
@@ -210,6 +211,17 @@ public class Principal {
     }
 
     private void pesquisarBiografiaArtista() {
+        listarArtistasCadastrados();
+        System.out.println("\nVocê deseja consultar a biografia de que artista?");
+        nomeArtista = sc.nextLine();
 
+        artistaBusca = repositorioArtista.findByNomeContainingIgnoreCase(nomeArtista);
+
+        if (artistaBusca.isPresent()) {
+            Artista artista = artistaBusca.get();
+            System.out.println(artista.toStringBiografia());
+        } else {
+            System.out.println("\nCadastre o artista antes de consultar sua biografia.");
+        }
     }
 }
