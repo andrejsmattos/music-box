@@ -1,5 +1,7 @@
 package br.com.andrejsmattos.music_box.entities;
 
+import br.com.andrejsmattos.music_box.utils.DeletaLinksHtml;
+import br.com.andrejsmattos.music_box.utils.traducao.ConsultaMyMemory;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -64,6 +66,10 @@ public class Artista {
         this.ouvintes = ouvintes;
         this.totalReproducoes = totalReproducoes;
         this.tipoArtista = tipoArtista;
+    }
+
+    public Artista(DadosArtista dadosArtista) {
+        this.resumo = resumo;
     }
 
     public Long getId() {
@@ -146,4 +152,35 @@ public class Artista {
                 ", ouvintes: " + formatarNumero(ouvintes) +
                 ", totalReproducoes: " + formatarNumero(totalReproducoes);
     }
+
+    public String getResumoTraduzido() {
+        if (resumo == null || resumo.isEmpty()) {
+            return "Resumo não disponível para tradução.";
+        }
+        try {
+            // Limpar o texto removendo links HTML
+            String textoLimpo = DeletaLinksHtml.removerLinksHtml(resumo);
+
+           // System.out.println("Texto para tradução: " + textoLimpo);
+
+            return ConsultaMyMemory.obterTraducao(textoLimpo);
+        } catch (Exception e) {
+            return "Erro ao traduzir o resumo.";
+        }
+    }
+
+
+
+    public String toStringBiografia() {
+    if (resumo == null || resumo.isEmpty()) {
+        return "Biografia: Não disponível";
+    }
+    try {
+        return "Biografia: " + getResumoTraduzido();
+    } catch (Exception e) {
+        return "Erro ao traduzir a biografia";
+    }
+}
+
+
 }

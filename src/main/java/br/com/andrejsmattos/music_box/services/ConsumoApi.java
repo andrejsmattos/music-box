@@ -22,4 +22,21 @@ public class ConsumoApi {
 
         return response.body();
     }
+
+    public String enviarDados(String url, String jsonBody) {
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            return response.body();
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException("Erro ao enviar dados para API", e);
+        }
+    }
+
 }
