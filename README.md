@@ -12,11 +12,11 @@ Music Box é uma aplicação Back-End desenvolvida em Java com o framework Sprin
 
 ## ✨ Funcionalidades
 
-- 🎨 Cadastro de artistas e músicas
-- 📝 Listagem de artistas e músicas cadastradas
-- 🔍 Pesquisa de biografias de artistas com tradução automática
-- 🎵 Integração com a API Last.fm para obter informações sobre artistas e músicas
-- 🌐 Integração com a API MyMemory para tradução de textos
+- Cadastro de artistas e músicas
+- Listagem de artistas e músicas cadastradas
+- Pesquisa de biografias de artistas com tradução automática
+- Integração com a API Last.fm para obter informações sobre artistas e músicas
+- Integração com a API MyMemory para tradução de textos
 
 ## 🚀 Tecnologias Utilizadas
 
