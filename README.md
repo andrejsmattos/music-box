@@ -8,7 +8,7 @@
 
 ## 📋 Descrição
 
-Music Box é uma aplicação Back-End desenvolvida em Java com o framework Spring Boot, projetada para rodar no console. O objetivo principal é gerenciar informações sobre artistas, músicas e álbuns, além de fornecer traduções de biografias de artistas utilizando a API MyMemory.
+Music Box é uma aplicação Back-End console-based, desenvolvida em Java e Spring Boot. O sistema gerencia artistas e músicas com o uso da API Last.fm, com funcionalidades adicionais de tradução automática de biografias via API MyMemory.
 
 ## ✨ Funcionalidades
 
